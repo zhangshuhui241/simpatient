@@ -6,4 +6,4 @@ git modify again
 stupid boss
 ?
 it is very fast to create a branch
-fast and simple
+create a new branch feature1 is fast and simple
