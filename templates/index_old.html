@@ -1,0 +1,31 @@
+{%extends 'base.html'%}
+{%block body%}
+<div >
+        
+
+
+        <footer class="footer navbar-fixed-bottom ">
+            <div class="form-group" id='dialog1'>
+                <input type="text" class="form-control" id="conv" placeholder="请输入询问内容,输入完毕后点发送" >
+                <button class="btn btn-primary" id="submit">发送</button>
+                <button class="btn btn-primary" id="end">结束对话</button>
+            </div>
+        </footer>       
+
+
+      
+
+        <div class="form-group" >
+            <label class="form-control">问询记录</label>
+            <p class="pre-scrollable" style=" height:450px; overflow:auto" id='dialog2'>
+            
+            </p>
+        </div>
+</div>        
+{%endblock%}
+
+{%block script%}
+{{super()}}
+{%endblock%}
+
+

@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>AI问询</title>
+        <link href="{{ url_for('static',filename='bootstrap.min.css')}}" rel="stylesheet">
+
+    </head>
+    <body>
+
+        {%block body%}
+        <!-- BODY部分继承后重写 -->
+        {%endblock%}
+            
+
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="{{ url_for('static',filename='jquery.min.js')}}"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="{{ url_for('static',filename='bootstrap.min.js')}}"></script>
+        
+        {%block script%}
+            <script type="text/javascript">
+                Date.prototype.Format = function (fmt) { //author: meizz 
+                var o = {
+                    "M+": this.getMonth() + 1, //月份 
+                    "d+": this.getDate(), //日 
+                    "h+": this.getHours(), //小时 
+                    "m+": this.getMinutes(), //分 
+                    "s+": this.getSeconds(), //秒 
+                    "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+                    "S": this.getMilliseconds() //毫秒 
+                };
+                if (/(y+)/.test(fmt)) {
+                    fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+                }
+                for (var k in o)
+                    if (new RegExp("(" + k + ")").test(fmt)) 
+                        fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                return fmt;
+
+                }
+
+                //调用： 
+                var time1 = new Date().Format("yyyy-MM-dd hh:mm:ss");
+                //ajax
+                function conv(){
+                    htmlobj=$.ajax({url:"/ai?question="+$("#conv").val(),async:false});
+                    $("#dialog2").append('<p>'+time1+' &nbsp&nbsp&nbsp&nbsp我：'+$("#conv").val()+'</p>');
+                    $("#dialog2").append('<p>'+time1+' 病人：'+htmlobj.responseText+'</p>');
+                    $("#conv").val("");
+                }
+                //ajax
+                
+                $(document).ready(function(){
+                    $("#submit").click(function(){
+                        conv();                     
+                    });
+                    $(document).keyup(function(event){
+                        if(event.keyCode ==13){
+                            conv();
+                        }
+                    });
+                    $("#end").click(function(){
+                        $("#dialog2").empty();                     
+                    });
+                });
+               
+            </script>
+        {%endblock%}
+    </body>
+</html>
+
