@@ -12,7 +12,7 @@ model_path = '../data/chat_model_serving/1'
 url = "http://106.54.166.111:8501/v1/models/gru_bert:predict"
 
 print('loading question mapping file ... ', end = '')
-answer_mapping_file = 'answer.csv'
+answer_mapping_file = '../data/answer.csv'
 answer = pd.read_csv(answer_mapping_file,sep=',',encoding='utf-8')
 answer = answer.groupby('question').agg('first')
 print('complete!')
