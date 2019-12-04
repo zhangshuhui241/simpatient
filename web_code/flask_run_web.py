@@ -46,7 +46,6 @@ def ai():
     print(label_ai,prob_ai,reply_ai)
     result = reply_ai
     result = result + '\n(label_ai：' + str(label) + ', probability：' + str(int(prob*100)) + '%)'
-    
     label_keyword = keywordEngine.judge(question)
     result = result + '\n(label_keyword: ' + str(label_keyword)
     return result
@@ -57,7 +56,7 @@ def wx():
     label_ai,prob_ai,reply_ai = get_ai_reply(question,model_path = model_path,url = url,answer = answer)
     print(label_ai,prob_ai,reply_ai)
     label_keyword = keywordEngine.judge(question)
-    result_json = {'reply_ai':reply_ai,'label_ai':label_ai,'prob_ai':prob_ai,'label_keyword',label_keyword}
+    result_json = {'reply_ai':reply_ai,'label_ai':label_ai,'prob_ai':prob_ai,'label_keyword':label_keyword}
     return result_json
         
 @app.route('/')
