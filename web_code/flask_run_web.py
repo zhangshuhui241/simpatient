@@ -9,7 +9,7 @@ from keywordMapping import keyWordMapping
 app = Flask(__name__)
 
 model_path = './chat_model_serving/1'
-url = "http://127.0.0.1:8501/v1/models/gru_bert:predict"
+url = "http://106.54.166.111:8501/v1/models/gru_bert:predict"
 
 print('loading question mapping file ... ', end = '')
 answer_mapping_file = 'answer.csv'
@@ -25,9 +25,9 @@ km_label = keywordEngine.judge(km_question)
 print('test question = ', km_question, ', label = ',km_label)
 
 def get_ai_reply(sentence,
-                 model_path='./chat_model_serving/1',
-                 url = "http://127.0.0.1:8501/v1/models/gru_bert:predict",
-                 answer = './answer.csv'):
+                 model_path='../data/chat_model_serving/1',
+                 url = "http://106.54.166.111:8501/v1/models/gru_bert:predict",
+                 answer = '../data/answer.csv'):
     sentence = list(sentence)
     processor = utils.load_processor(model_path = model_path)
     tensor = processor.process_x_dataset([sentence])
@@ -42,22 +42,22 @@ def get_ai_reply(sentence,
 @app.route('/ai', methods=['GET','POST'])
 def ai():
     question=request.args.get('question')
-    label,prob,reply = get_ai_reply(question,model_path = model_path,url = url,answer = answer)
-    print(label,prob,reply)
-    result = reply
+    label_ai,prob_ai,reply_ai = get_ai_reply(question,model_path = model_path,url = url,answer = answer)
+    print(label_ai,prob_ai,reply_ai)
+    result = reply_ai
     result = result + '\n(label_ai：' + str(label) + ', probability：' + str(int(prob*100)) + '%)'
     
-    km_label = keywordEngine.judge(question)
-    result = result + '\n(label_keyword: ' + str(km_label)
-    
+    label_keyword = keywordEngine.judge(question)
+    result = result + '\n(label_keyword: ' + str(label_keyword)
     return result
 
 @app.route('/wx', methods=['GET','POST'])
 def wx():
     question=request.args.get('question')
-    label,prob,reply = get_ai_reply(question,model_path = model_path,url = url,answer = answer)
-    print(label,prob,reply)
-    result_json = {'reply':reply,'label':label,'prob':prob}
+    label_ai,prob_ai,reply_ai = get_ai_reply(question,model_path = model_path,url = url,answer = answer)
+    print(label_ai,prob_ai,reply_ai)
+    label_keyword = keywordEngine.judge(question)
+    result_json = {'reply_ai':reply_ai,'label_ai':label_ai,'prob_ai':prob_ai,'label_keyword',label_keyword}
     return result_json
         
 @app.route('/')

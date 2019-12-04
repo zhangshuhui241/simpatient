@@ -11,14 +11,16 @@ import sys
 def get_len(s):
     return (len(s.split(u' '))+len(s.split(u'#'))-2)
 
-class keywordMapping():
+class keywordEngine():
     def __init__(self):
         self.df_input=None
+        
     def load_config_file(self,fname):
-        self.df_input=pd.read_csv(fname,encoding='gb18030')
+        self.df_input=pd.read_csv(fname,encoding='utf-8')
         self.df_input[u'length']=list(map(lambda x:get_len(x), self.df_input[u'关键词']))
         self.df_input=self.df_input.sort_values(by=u'length',ascending=False)
         self.df_input=self.df_input.reset_index(drop=True)
+        
     def judge(self,s):
         label=-1
         if self.df_input is None:
@@ -48,12 +50,12 @@ class keywordMapping():
 
         return label#,old_count
 
-def main():
-    #sample code
-    km=keywordMapping()
-    km.load_config_file(r'../data/keywords.csv')
-    question = '胸痛什么时候明显一些'
-    label = km.judge(question)
-    print(question, label)
+# def main():
+#     #sample code
+#     km=keywordMapping()
+#     km.load_config_file(r'../data/keywords.csv')
+#     question = '胸痛什么时候明显一些'
+#     label = km.judge(question)
+#     print(question, label)
 
-main()
+#main()
