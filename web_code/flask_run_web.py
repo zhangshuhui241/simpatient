@@ -8,7 +8,7 @@ import keywordMapping
 
 app = Flask(__name__)
 
-model_path = '../data/chat_model_serving/1'
+model_path = '../data/chat_model_serving/gru_bert/1'
 url = "http://106.54.166.111:8501/v1/models/gru_bert:predict"
 
 print('loading question mapping file ... ', end = '')
@@ -18,10 +18,10 @@ answer = answer.groupby('question').agg('first')
 print('complete!')
 
 print('loading keyword mapping file', end = ' ... ')
-kwEngine = keyWordMapping.keywordEngine()
+kwEngine = keywordMapping.keywordEngine()
 kwEngine.load_config_file('../data/keywords.csv')
 km_question = '胸痛什么时候明显一些'
-km_label = kmEngine.judge(km_question)
+km_label = kwEngine.judge(km_question)
 print('test question = ', km_question, ', label = ',km_label)
 
 def get_ai_reply(sentence,
@@ -45,9 +45,10 @@ def ai():
     label_ai,prob_ai,reply_ai = get_ai_reply(question,model_path = model_path,url = url,answer = answer)
     print(label_ai,prob_ai,reply_ai)
     result = reply_ai
-    result = result + '\n(label_ai：' + str(label) + ', probability：' + str(int(prob*100)) + '%)'
-    label_keyword = kmEngine.judge(question)
-    result = result + '\n(label_keyword: ' + str(label_keyword)
+    result = 'AI: ' + reply_ai + '(label：' + str(label_ai) + ', probability：' + str(int(prob_ai*100)) + '%) /// '
+    label_keyword = kwEngine.judge(question)
+    reply_keyword = answer.loc[int(label_keyword),'answer']
+    result = result + ' Keyword: ' + reply_keyword + '(label: ' + str(label_keyword) + ')'
     return result
 
 @app.route('/wx', methods=['GET','POST'])
