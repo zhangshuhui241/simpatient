@@ -4,11 +4,11 @@ import pandas as pd
 import numpy as np
 from kashgari import utils
 from flask import Flask, url_for, render_template, request, redirect, session
-from keywordMapping import keyWordMapping
+import keywordMapping
 
 app = Flask(__name__)
 
-model_path = './chat_model_serving/1'
+model_path = '../data/chat_model_serving/1'
 url = "http://106.54.166.111:8501/v1/models/gru_bert:predict"
 
 print('loading question mapping file ... ', end = '')
@@ -18,10 +18,10 @@ answer = answer.groupby('question').agg('first')
 print('complete!')
 
 print('loading keyword mapping file', end = ' ... ')
-keywordEngine = keyWordMapping()
-keywordEngine.load_config_file('./data/keywords.csv')
+kwEngine = keyWordMapping.keywordEngine()
+kwEngine.load_config_file('../data/keywords.csv')
 km_question = '胸痛什么时候明显一些'
-km_label = keywordEngine.judge(km_question)
+km_label = kmEngine.judge(km_question)
 print('test question = ', km_question, ', label = ',km_label)
 
 def get_ai_reply(sentence,
@@ -46,7 +46,7 @@ def ai():
     print(label_ai,prob_ai,reply_ai)
     result = reply_ai
     result = result + '\n(label_ai：' + str(label) + ', probability：' + str(int(prob*100)) + '%)'
-    label_keyword = keywordEngine.judge(question)
+    label_keyword = kmEngine.judge(question)
     result = result + '\n(label_keyword: ' + str(label_keyword)
     return result
 
@@ -55,7 +55,7 @@ def wx():
     question=request.args.get('question')
     label_ai,prob_ai,reply_ai = get_ai_reply(question,model_path = model_path,url = url,answer = answer)
     print(label_ai,prob_ai,reply_ai)
-    label_keyword = keywordEngine.judge(question)
+    label_keyword = kmEngine.judge(question)
     result_json = {'reply_ai':reply_ai,'label_ai':label_ai,'prob_ai':prob_ai,'label_keyword':label_keyword}
     return result_json
         
