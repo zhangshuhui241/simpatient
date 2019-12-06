@@ -5,6 +5,17 @@ import numpy as np
 from kashgari import utils
 from flask import Flask, url_for, render_template, request, redirect, session
 import keywordMapping
+import logging
+
+with open('./log.txt','w') as file:
+    file.write("date // name // level // question // ai_label // ai_prob // ai_reply // keyword_label // keyword_reply\n")
+logger = logging.getLogger(__name__)
+logger.setLevel(level = logging.INFO)
+handler = logging.FileHandler("log.txt")
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s  // %(name)s // %(levelname)s // %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 app = Flask(__name__)
 
@@ -49,6 +60,8 @@ def ai():
     label_keyword = kwEngine.judge(question)
     reply_keyword = answer.loc[int(label_keyword),'answer']
     result = result + ' Keyword: ' + reply_keyword + '(label: ' + str(label_keyword) + ')'
+    message = question + ' // ' + str(label_ai) + ' // '+ str(round(prob_ai,2)) + ' // ' + reply_ai + ' // ' +  str(label_keyword) +  ' // ' + reply_keyword 
+    logger.info(message) 
     return result
 
 @app.route('/wx', methods=['GET','POST'])
